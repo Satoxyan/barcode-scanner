@@ -9,15 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('transaksi', function (Blueprint $table) {
-            $table->id();
-            $table->dateTime('tanggal_transaksi')->default(now());
-            $table->decimal('total_harga', 10, 2)->default(0);
-            $table->timestamps();
-        });
-    }
+    public function up()
+{
+    Schema::create('transaksi', function (Blueprint $table) {
+        $table->id();
+        $table->json('items'); // Menyimpan semua barang dalam satu kolom
+        $table->decimal('total', 10, 2); // Total harga transaksi
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

@@ -25,7 +25,6 @@ class BarangResource extends Resource
                 Forms\Components\TextInput::make('barcode')
                     ->label('Barcode')
                     ->required()
-                    ->unique()
                     ->live(), // Agar form bisa mendeteksi perubahan langsung
 
                 Forms\Components\TextInput::make('nama')

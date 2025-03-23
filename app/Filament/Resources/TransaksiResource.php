@@ -30,7 +30,6 @@ class TransaksiResource extends Resource
             ->schema([
                 TextInput::make('barcodeInput')
                     ->label('Scan Barcode')
-                    ->required()
                     ->live()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $barang = Barang::where('barcode', $state)->first();
@@ -117,13 +116,13 @@ class TransaksiResource extends Resource
                     ->disabled()
                     ->numeric()
                     ->live()
-                    ->dehydrated(false)
+                    ->dehydrated()
                     ->reactive()
                     ->extraAttributes(['class' => 'text-large'])
                     ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
             ]);
     }
-
+    
     public static function getRelations(): array
     {
         return [];

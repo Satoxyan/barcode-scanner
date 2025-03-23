@@ -13,13 +13,11 @@ class Transaksi extends Model
     protected $table = 'transaksi';
 
     protected $fillable = [
-        'tanggal_transaksi',
-        'total_harga',
+        'items',  // Menyimpan data barang dalam bentuk JSON
+        'total',  // Total harga seluruh barang
     ];
 
-    public function details()
-    {
-        return $this->hasMany(TransaksiDetail::class, 'transaksi_id');
-
-}
+    protected $casts = [
+        'items' => 'array', // Konversi otomatis ke array saat diambil dari database
+    ];
 }

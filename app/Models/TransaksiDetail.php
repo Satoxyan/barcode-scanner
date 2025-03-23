@@ -17,6 +17,7 @@ class TransaksiDetail extends Model
         'jumlah',
         'harga_satuan',
         'subtotal',
+        'total',
     ];
 
     public function barang()
