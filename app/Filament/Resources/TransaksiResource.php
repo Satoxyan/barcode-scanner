@@ -112,6 +112,7 @@ class TransaksiResource extends Resource
                     ->columns(5)
                     ->columnSpanFull()
                     ->dehydrated()
+                    ->default([])
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $total = collect($state)->sum('subtotal');
                         $set('total', $total);
