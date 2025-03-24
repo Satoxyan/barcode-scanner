@@ -12,12 +12,10 @@ class Transaksi extends Model
 
     protected $table = 'transaksi';
 
-    protected $fillable = [
-        'items',  // Menyimpan data barang dalam bentuk JSON
-        'total',  // Total harga seluruh barang
-    ];
+    protected $fillable = ['total'];
 
-    protected $casts = [
-        'items' => 'array', // Konversi otomatis ke array saat diambil dari database
-    ];
+    public function barangTransaksi()
+    {
+        return $this->hasMany(BarangTransaksi::class, 'id_transaksi');
+    }
 }

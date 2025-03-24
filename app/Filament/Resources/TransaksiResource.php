@@ -70,16 +70,19 @@ class TransaksiResource extends Resource
                     ->schema([
                         TextInput::make('barcode')
                             ->label('Barcode')
+                            ->dehydrated()
                             ->hidden(fn ($get) => empty($get('nama')))
                             ->disabled(),
 
                         TextInput::make('nama')
                             ->label('Nama Barang')
+                    ->dehydrated()
                             ->hidden(fn ($get) => empty($get('nama')))
                             ->disabled(),
 
                         TextInput::make('harga')
                             ->label('Harga')
+                    ->dehydrated()
                             ->hidden(fn ($get) => empty($get('nama')))
                             ->disabled()
                             ->numeric(),
@@ -91,6 +94,7 @@ class TransaksiResource extends Resource
                             ->numeric()
                             ->live()
                             ->disabled()
+                    ->dehydrated()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $set('subtotal', $state * $get('harga'));
                                 $items = $get('items');
@@ -101,11 +105,13 @@ class TransaksiResource extends Resource
                         TextInput::make('subtotal')
                             ->label('Subtotal')
                             ->disabled()
+                    ->dehydrated()
                             ->hidden(fn ($get) => empty($get('nama')))
                             ->numeric(),
                     ])
                     ->columns(5)
                     ->columnSpanFull()
+                    ->dehydrated()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $total = collect($state)->sum('subtotal');
                         $set('total', $total);
@@ -118,6 +124,7 @@ class TransaksiResource extends Resource
                     ->live()
                     ->dehydrated()
                     ->reactive()
+                    ->default([])
                     ->extraAttributes(['class' => 'text-large'])
                     ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
             ]);
