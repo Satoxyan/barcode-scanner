@@ -18,20 +18,17 @@ class CreateTransaksi extends CreateRecord
     protected function handleRecordCreation(array $data): Model
 {
     return DB::transaction(function () use ($data) {
-        // Pastikan 'items' tidak null
         $items = $data['items'] ?? [];
 
-        // Simpan transaksi utama
         $transaksi = Transaksi::create([
-            'total' => $data['total'] ?? 0, // Pastikan nilai tidak null
+            'total' => $data['total'] ?? 0,
         ]);
 
-        // Simpan detail barang ke tabel barang_transaksi
         foreach ($items as $item) {
             BarangTransaksi::create([
                 'id_transaksi' => $transaksi->id,
-                'nama' => $item['nama'] ?? 'UNKNOWN', // ✅ Tambahkan default agar tidak null
-                'harga' => $item['harga'] ?? 0,
+                'nama' => $item['nama'] ?? 'TANPA NAMA',  // ✅ Pastikan mengambil dari $item
+                'harga' => $item['harga'] ?? 0,          // ✅ Pastikan mengambil dari $item
                 'jumlah' => $item['jumlah'] ?? 1,
                 'subtotal' => $item['subtotal'] ?? 0,
             ]);

@@ -71,29 +71,29 @@ class TransaksiResource extends Resource
                         TextInput::make('barcode')
                             ->label('Barcode')
                             ->dehydrated()
-                            ->hidden(fn ($get) => empty($get('nama')))
-                            ->disabled(),
+                            
+                            ->readOnly(),
 
                         TextInput::make('nama')
                             ->label('Nama Barang')
                     ->dehydrated()
-                            ->hidden(fn ($get) => empty($get('nama')))
-                            ->disabled(),
+                            
+                            ->readOnly(),
 
                         TextInput::make('harga')
                             ->label('Harga')
                     ->dehydrated()
-                            ->hidden(fn ($get) => empty($get('nama')))
-                            ->disabled()
+                            
+                            ->readOnly()
                             ->numeric(),
 
                         TextInput::make('jumlah')
                             ->label('Jumlah')
                             ->required()
-                            ->hidden(fn ($get) => empty($get('nama')))
+                            
                             ->numeric()
                             ->live()
-                            ->disabled()
+                            ->readOnly()
                     ->dehydrated()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $set('subtotal', $state * $get('harga'));
@@ -104,9 +104,9 @@ class TransaksiResource extends Resource
 
                         TextInput::make('subtotal')
                             ->label('Subtotal')
-                            ->disabled()
+                            ->readOnly()
                     ->dehydrated()
-                            ->hidden(fn ($get) => empty($get('nama')))
+                            
                             ->numeric(),
                     ])
                     ->columns(5)
@@ -119,7 +119,7 @@ class TransaksiResource extends Resource
 
                 TextInput::make('total')
                     ->label('Total Harga')
-                    ->disabled()
+                    ->readOnly()
                     ->numeric()
                     ->live()
                     ->dehydrated()
