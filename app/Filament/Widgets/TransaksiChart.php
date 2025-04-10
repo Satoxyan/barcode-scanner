@@ -36,7 +36,7 @@ class TransaksiChart extends ChartWidget
             [
                 'label' => 'Jumlah Transaksi',
                 'data' => $data,
-                'backgroundColor' => '#3b82f6',
+                'backgroundColor' => '#FFB1C5',
             ],
         ],
         'labels' => $dates->map(fn ($date) => date('d M', strtotime($date))),

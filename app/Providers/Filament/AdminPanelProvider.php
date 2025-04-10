@@ -36,6 +36,17 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            // ->brandName('BarKodein')
+            ->brandLogo(asset('images/logo.png'))
+            ->font('outfit')
+            ->colors([
+                'danger' => Color::Rose,
+                'gray' => 'rgb(44, 31, 34)',
+                'info' => Color::Blue,
+                'primary' => '#703346',
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
+            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -52,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            
             ->authMiddleware([
                 Authenticate::class, // Pastikan middleware auth tetap ada
             ]);
