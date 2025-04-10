@@ -124,6 +124,29 @@ class TransaksiResource extends Resource
                     ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
             ]);
     }
+
+    public static function table(Tables\Table $table): Tables\Table
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('id')
+                ->label('ID')
+                ->sortable()
+                ->searchable(),
+
+                Tables\Columns\TextColumn::make('total')
+                ->label('Total Harga')
+                ->sortable()
+                ->searchable(),
+
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Tanggal')
+                ->dateTime('d-m-Y H:i')
+                ->sortable(),
+        ])
+        ->defaultSort('created_at', 'desc');
+}
+
     
     public static function getRelations(): array
     {
