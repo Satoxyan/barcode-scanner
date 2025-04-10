@@ -35,6 +35,13 @@ class BarangResource extends Resource
                     ->label('Harga Barang')
                     ->required()
                     ->numeric(),
+
+                Forms\Components\TextInput::make('stok')
+                    ->label('Stok Barang')
+                    ->numeric()
+                    ->required()
+                    ->default(0),
+                
             ]);
     }
 
@@ -44,6 +51,7 @@ class BarangResource extends Resource
                 Tables\Columns\TextColumn::make('barcode')->label('Barcode'),
                 Tables\Columns\TextColumn::make('nama')->label('Nama Barang'),
                 Tables\Columns\TextColumn::make('harga')->label('Harga Barang')->money('IDR'),
+                Tables\Columns\TextColumn::make('stok')->label('Stok'),
             ])
             ->filters([]);
     }

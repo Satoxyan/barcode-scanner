@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('barcode')->unique();
             $table->string('nama');
             $table->decimal('harga', 10, 2); // Format harga dengan 2 angka di belakang koma
+            $table->integer('stok')->default(0);
             $table->timestamps();
         });
     }
