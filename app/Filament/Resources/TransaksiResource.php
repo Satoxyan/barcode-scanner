@@ -71,30 +71,25 @@ class TransaksiResource extends Resource
                         TextInput::make('barcode')
                             ->label('Barcode')
                             ->dehydrated()
-                            
                             ->readOnly(),
 
                         TextInput::make('nama')
                             ->label('Nama Barang')
-                    ->dehydrated()
-                            
+                            ->dehydrated()
                             ->readOnly(),
 
                         TextInput::make('harga')
                             ->label('Harga')
-                    ->dehydrated()
-                            
+                            ->dehydrated()
                             ->readOnly()
                             ->numeric(),
 
                         TextInput::make('jumlah')
                             ->label('Jumlah')
                             ->required()
-                            
                             ->numeric()
                             ->live()
-                            ->readOnly()
-                    ->dehydrated()
+                            ->dehydrated()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $set('subtotal', $state * $get('harga'));
                                 $items = $get('items');
@@ -105,8 +100,7 @@ class TransaksiResource extends Resource
                         TextInput::make('subtotal')
                             ->label('Subtotal')
                             ->readOnly()
-                    ->dehydrated()
-                            
+                            ->dehydrated()
                             ->numeric(),
                     ])
                     ->columns(5)
