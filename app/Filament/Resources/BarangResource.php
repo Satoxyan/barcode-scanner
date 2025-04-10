@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\DeleteBulkAction;
 
 class BarangResource extends Resource
 {
@@ -48,10 +50,18 @@ class BarangResource extends Resource
     public static function table(Tables\Table $table): Tables\Table {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('barcode')->label('Barcode'),
-                Tables\Columns\TextColumn::make('nama')->label('Nama Barang'),
+                Tables\Columns\TextColumn::make('barcode')->label('Barcode')
+                ->searchable(),
+
+                Tables\Columns\TextColumn::make('nama')->label('Nama Barang')
+                ->searchable(),
+
                 Tables\Columns\TextColumn::make('harga')->label('Harga Barang')->money('IDR'),
+
                 Tables\Columns\TextColumn::make('stok')->label('Stok'),
+            ])
+            ->bulkActions([
+                DeleteBulkAction::make(),
             ])
             ->filters([]);
     }

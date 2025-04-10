@@ -25,17 +25,27 @@ class CreateTransaksi extends CreateRecord
         ]);
 
         foreach ($items as $item) {
+            // Simpan ke tabel barang_transaksi
             BarangTransaksi::create([
                 'id_transaksi' => $transaksi->id,
-                'nama' => $item['nama'] ?? 'TANPA NAMA',  // ✅ Pastikan mengambil dari $item
-                'harga' => $item['harga'] ?? 0,          // ✅ Pastikan mengambil dari $item
+                'nama' => $item['nama'] ?? 'TANPA NAMA', 
+                'harga' => $item['harga'] ?? 0,          
                 'jumlah' => $item['jumlah'] ?? 1,
                 'subtotal' => $item['subtotal'] ?? 0,
             ]);
+
+            // Kurangi stok di tabel barang
+            if (!empty($item['barcode'])) {
+                $barang = Barang::where('barcode', $item['barcode'])->first();
+                if ($barang) {
+                    $barang->decrement('stok', $item['jumlah']);
+                }
+            }
         }
 
         return $transaksi;
     });
 }
+
 
 }
