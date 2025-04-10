@@ -37,7 +37,8 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             // ->brandName('BarKodein')
-            ->brandLogo(asset('images/logo.png'))
+            ->brandLogo(asset('images/barcode.png'))
+            ->brandLogoHeight('3rem')
             ->font('outfit')
             ->colors([
                 'danger' => Color::Rose,
