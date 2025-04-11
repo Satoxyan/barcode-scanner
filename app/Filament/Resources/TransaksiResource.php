@@ -17,6 +17,7 @@ use App\Models\TransaksiDetail;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\DB;
+use Filament\Forms\Components\Grid;
 
 class TransaksiResource extends Resource
 {
@@ -57,9 +58,7 @@ class TransaksiResource extends Resource
                             }
 
                             $set('items', $items);
-                            $set('barcodeInput', ''); // Hapus input barcode setelah scan
-
-                            // Update total after items are updated
+                            $set('barcodeInput', '');
                             $total = collect($items)->sum('subtotal');
                             $set('total', $total);
                         }
@@ -69,21 +68,18 @@ class TransaksiResource extends Resource
                     ->label('Daftar Barang')
                     ->schema([
                         TextInput::make('barcode')
-                            ->label('Barcode')
-                            ->dehydrated()
-                            ->readOnly(),
-
+                        ->label('Barcode')
+                        ->dehydrated()
+                        ->readOnly(),
                         TextInput::make('nama')
-                            ->label('Nama Barang')
-                            ->dehydrated()
-                            ->readOnly(),
-
+                        ->label('Nama Barang')
+                        ->dehydrated()
+                        ->readOnly(),
                         TextInput::make('harga')
-                            ->label('Harga')
-                            ->dehydrated()
-                            ->readOnly()
-                            ->numeric(),
-
+                        ->label('Harga')
+                        ->dehydrated()
+                        ->readOnly()
+                        ->numeric(),
                         TextInput::make('jumlah')
                             ->label('Jumlah')
                             ->required()
@@ -96,12 +92,11 @@ class TransaksiResource extends Resource
                                 $total = collect($items)->sum('subtotal');
                                 $set('total', $total);
                             }),
-
                         TextInput::make('subtotal')
-                            ->label('Subtotal')
-                            ->readOnly()
-                            ->dehydrated()
-                            ->numeric(),
+                        ->label('Subtotal')
+                        ->readOnly()
+                        ->dehydrated()
+                        ->numeric(),
                     ])
                     ->columns(5)
                     ->columnSpanFull()
@@ -112,6 +107,7 @@ class TransaksiResource extends Resource
                         $set('total', $total);
                     }),
 
+                // Total Harga
                 TextInput::make('total')
                     ->label('Total Harga')
                     ->readOnly()
@@ -122,6 +118,26 @@ class TransaksiResource extends Resource
                     ->default([])
                     ->extraAttributes(['class' => 'text-large'])
                     ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
+
+                // Tambahan Grid untuk Nominal & Kembalian
+                Grid::make(2)->schema([
+                    TextInput::make('nominal_uang')
+                        ->label('Nominal Uang')
+                        ->numeric()
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $total = (int) $get('total');
+                            $kembalian = (int) $state - $total;
+                            $set('kembalian', max($kembalian, 0));
+                        }),
+
+                    TextInput::make('kembalian')
+                        ->label('Kembalian')
+                        ->readOnly()
+                        ->numeric()
+                        ->reactive()
+                        ->dehydrated(false), 
+                ]),
             ]);
     }
 
