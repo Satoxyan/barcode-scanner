@@ -77,7 +77,35 @@ class EditTransaksi extends EditRecord
                                     }),
                             ])
                             ->columns(1),
+
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('nominal_uang')
+                                ->label('Nominal Uang')
+                                ->numeric()
+                                ->required()
+                                ->dehydrated() // <== WAJIB agar dikirim ke database
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                    $total = (int) $get('total_harga') ?? 0;
+                                    $set('kembalian', max((int) $state - $total, 0));
+                                }),
+                            
+                            TextInput::make('kembalian')
+                                ->label('Kembalian')
+                                ->readOnly()
+                                ->numeric()
+                                ->dehydrated(), // <== juga harus didehydrate
+                            
+                            ])
+                            ->columns(2),
                     ]),
             ]);
     }
+        protected function mutateFormDataBeforeSave(array $data): array
+    {
+        \Log::info('Form Data Edit:', $data); // log data edit
+        return $data;
+}
+
 }

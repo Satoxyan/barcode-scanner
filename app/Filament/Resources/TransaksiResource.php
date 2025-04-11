@@ -19,6 +19,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 
+
 class TransaksiResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
@@ -32,7 +33,7 @@ class TransaksiResource extends Resource
                 TextInput::make('barcodeInput')
                     ->label('Scan Barcode')
                     ->live()
-                    ->numeric()1
+                    ->numeric()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $barang = Barang::where('barcode', $state)->first();
                         if ($barang) {
@@ -130,24 +131,26 @@ class TransaksiResource extends Resource
                     ->extraAttributes(['class' => 'text-large'])
                     ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
 
-                Grid::make(2)->schema([
-                    TextInput::make('nominal_uang')
+                    Grid::make(2)->schema([
+                        TextInput::make('nominal_uang')
                         ->label('Nominal Uang')
                         ->numeric()
+                        ->required()
+                        ->dehydrated()
                         ->reactive()
                         ->afterStateUpdated(function ($state, callable $set, callable $get) {
                             $total = (int) $get('total');
-                            $kembalian = (int) $state - $total;
-                            $set('kembalian', max($kembalian, 0));
+                            $set('kembalian', max((int) $state - $total, 0));
                         }),
-
+                    
                     TextInput::make('kembalian')
                         ->label('Kembalian')
                         ->readOnly()
+                        ->dehydrated()
                         ->numeric()
-                        ->reactive()
-                        ->dehydrated(false), 
-                ]),
+                        ->reactive(),
+                    
+                    ])                    
             ]);
     }
 
@@ -169,6 +172,15 @@ class TransaksiResource extends Resource
                 ->label('Tanggal')
                 ->dateTime('d-m-Y H:i')
                 ->sortable(),
+
+            Tables\Columns\TextColumn::make('nominal_uang')
+                ->label('Nominal Uang')
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('kembalian')
+                ->label('Kembalian')
+                ->sortable(),
+
         ])
         ->defaultSort('created_at', 'desc');
 }

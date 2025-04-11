@@ -22,7 +22,10 @@ class CreateTransaksi extends CreateRecord
 
         $transaksi = Transaksi::create([
             'total' => $data['total'] ?? 0,
+            'nominal_uang' => $data['nominal_uang'] ?? 0,
+            'kembalian' => $data['kembalian'] ?? 0,
         ]);
+        
 
         foreach ($items as $item) {
             // Simpan ke tabel barang_transaksi
@@ -42,6 +45,8 @@ class CreateTransaksi extends CreateRecord
                 }
             }
         }
+
+        
 
         return $transaksi;
     });
