@@ -42,9 +42,9 @@ class AdminPanelProvider extends PanelProvider
             ->font('outfit')
             ->colors([
                 'danger' => Color::Rose,
-                'gray' => 'rgb(44, 31, 34)',
+                'gray' => 'rgb(51, 25, 17)',
                 'info' => Color::Blue,
-                'primary' => '#703346',
+                'primary' => 'rgb(212, 99, 64)',
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
