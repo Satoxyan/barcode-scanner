@@ -32,7 +32,7 @@ class TransaksiResource extends Resource
                 TextInput::make('barcodeInput')
                     ->label('Scan Barcode')
                     ->live()
-                    ->numeric()1
+                    ->numeric()
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $barang = Barang::where('barcode', $state)->first();
                         if ($barang) {
