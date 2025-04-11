@@ -32,6 +32,7 @@ class TransaksiResource extends Resource
                 TextInput::make('barcodeInput')
                     ->label('Scan Barcode')
                     ->live()
+                    ->numeric()1
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $barang = Barang::where('barcode', $state)->first();
                         if ($barang) {
@@ -71,31 +72,42 @@ class TransaksiResource extends Resource
                         ->label('Barcode')
                         ->dehydrated()
                         ->readOnly(),
+                        
                         TextInput::make('nama')
                         ->label('Nama Barang')
                         ->dehydrated()
                         ->readOnly(),
+
                         TextInput::make('harga')
                         ->label('Harga')
                         ->dehydrated()
                         ->readOnly()
                         ->numeric(),
+
                         TextInput::make('jumlah')
                             ->label('Jumlah')
                             ->required()
                             ->numeric()
                             ->live()
+                            ->reactive()
                             ->dehydrated()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                $set('subtotal', $state * $get('harga'));
-                                $items = $get('items');
+                                $harga = $get('harga') ?? 0;
+                                $subtotal = $state * $harga;
+                                $set('subtotal', $subtotal);
+                        
+                                // Hitung ulang total setelah subtotal diperbarui
+                                $items = $get('../items') ?? []; // naik 2 level dari repeater
+                                $items[$get('__index')]['subtotal'] = $subtotal; // perbarui subtotal di array
+                        
                                 $total = collect($items)->sum('subtotal');
-                                $set('total', $total);
+                                $set('../../total', $total); // set total di luar repeater
                             }),
                         TextInput::make('subtotal')
                         ->label('Subtotal')
                         ->readOnly()
                         ->dehydrated()
+                        ->reactive()
                         ->numeric(),
                     ])
                     ->columns(5)
@@ -107,7 +119,6 @@ class TransaksiResource extends Resource
                         $set('total', $total);
                     }),
 
-                // Total Harga
                 TextInput::make('total')
                     ->label('Total Harga')
                     ->readOnly()
@@ -119,7 +130,6 @@ class TransaksiResource extends Resource
                     ->extraAttributes(['class' => 'text-large'])
                     ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
 
-                // Tambahan Grid untuk Nominal & Kembalian
                 Grid::make(2)->schema([
                     TextInput::make('nominal_uang')
                         ->label('Nominal Uang')
