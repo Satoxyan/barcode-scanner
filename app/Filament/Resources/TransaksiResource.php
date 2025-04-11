@@ -86,7 +86,6 @@ class TransaksiResource extends Resource
 
                         TextInput::make('jumlah')
                             ->label('Jumlah')
-                            ->required()
                             ->numeric()
                             ->live()
                             ->reactive()
@@ -113,6 +112,7 @@ class TransaksiResource extends Resource
                     ->columns(5)
                     ->columnSpanFull()
                     ->dehydrated()
+                    ->required()
                     ->default([])
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
                         $total = collect($state)->sum('subtotal');
@@ -170,7 +170,10 @@ class TransaksiResource extends Resource
                 ->dateTime('d-m-Y H:i')
                 ->sortable(),
         ])
-        ->defaultSort('created_at', 'desc');
+        ->defaultSort('created_at', 'desc')
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
 }
 
     

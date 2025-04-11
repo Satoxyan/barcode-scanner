@@ -54,7 +54,8 @@ class BarangResource extends Resource
                 ->searchable(),
 
                 Tables\Columns\TextColumn::make('nama')->label('Nama Barang')
-                ->searchable(),
+                ->searchable()
+                ->sortable(),
 
                 Tables\Columns\TextColumn::make('harga')->label('Harga Barang')->money('IDR'),
 
