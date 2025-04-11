@@ -30,6 +30,7 @@ class GeneratedBarcodeResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('kode')
                     ->label('Input Kode')
+                    ->numeric()
                     ->required(),
             ]);
     }
@@ -62,6 +63,7 @@ class GeneratedBarcodeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -79,8 +81,7 @@ class GeneratedBarcodeResource extends Resource
     {
         return [
             'index' => Pages\ListGeneratedBarcodes::route('/'),
-            'create' => Pages\CreateGeneratedBarcode::route('/create'),
-            'edit' => Pages\EditGeneratedBarcode::route('/{record}/edit'),
+            
         ];
     }
 }

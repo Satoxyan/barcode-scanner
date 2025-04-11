@@ -4,6 +4,8 @@ namespace App\Filament\Resources\TransaksiResource\Pages;
 
 use App\Filament\Resources\TransaksiResource;
 use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Support\Enums\ActionSize;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Repeater;
@@ -21,6 +23,17 @@ class EditTransaksi extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    public function getFormActions(): array
+{
+    return [
+        Action::make('cancel')
+            ->label('Batal')
+            ->url(fn () => static::getResource()::getUrl()) // Kembali ke halaman index resource
+            ->color('gray')
+            ->size(ActionSize::Small),
+    ];
+}
 
     public function form(Form $form): Form
     {

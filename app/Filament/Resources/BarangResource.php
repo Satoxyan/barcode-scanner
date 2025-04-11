@@ -61,6 +61,11 @@ class BarangResource extends Resource
 
                 Tables\Columns\TextColumn::make('stok')->label('Stok'),
             ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+
+            ])
             ->bulkActions([
                 DeleteBulkAction::make(),
             ])
@@ -70,8 +75,7 @@ class BarangResource extends Resource
     public static function getPages(): array {
         return [
             'index' => Pages\ListBarangs::route('/'),
-            'create' => Pages\CreateBarang::route('/create'),
-            'edit' => Pages\EditBarang::route('/{record}/edit'),
+            
         ];
     }
 }

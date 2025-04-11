@@ -183,6 +183,10 @@ class TransaksiResource extends Resource
 
         ])
         ->defaultSort('created_at', 'desc')
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ])
         ->bulkActions([
             Tables\Actions\DeleteBulkAction::make(),
         ]);
@@ -198,7 +202,7 @@ class TransaksiResource extends Resource
     {
         return [
             'index' => Pages\ListTransaksis::route('/'),
-            'create' => Pages\CreateTransaksi::route('/create'),
+          
             'edit' => Pages\EditTransaksi::route('/{record}/edit'),
         ];
     }
