@@ -52,7 +52,9 @@ class GeneratedBarcodeResource extends Resource
                         }
 
                         return $filename;
-                    }),
+                    })
+                    ->url(fn ($record) => Storage::url("barcodes/{$record->id}.png"))
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('kode')->label('Kode')
                     ->searchable()
                     ->sortable(),
@@ -62,8 +64,17 @@ class GeneratedBarcodeResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('download')
+                    ->label('Unduh')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn ($record) => Storage::url("barcodes/{$record->id}.png"))
+                    ->openUrlInNewTab()
+                    ->extraAttributes(function ($record) {
+                        return [
+                            'download' => "{$record->kode}.png", // Ganti nama file unduhan dengan kode
+                        ];
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -81,7 +92,6 @@ class GeneratedBarcodeResource extends Resource
     {
         return [
             'index' => Pages\ListGeneratedBarcodes::route('/'),
-            
         ];
     }
 }
