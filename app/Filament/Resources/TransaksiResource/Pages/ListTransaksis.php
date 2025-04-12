@@ -31,6 +31,7 @@ class ListTransaksis extends ListRecords
             ->form(self::getFormSchema()) // ← gunakan schema form yang sama
             ->modalHeading('Transaksi Baru')
             ->modalSubmitActionLabel('Simpan')
+            ->slideOver()
             ->action(function (array $data) {
                 // Logika simpan bisa disalin dari `CreateTransaksi::handleRecordCreation`
                 \DB::transaction(function () use ($data) {
