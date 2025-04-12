@@ -18,12 +18,15 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Carbon;
+
 
 
 class TransaksiResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-s-banknotes';
     protected static ?string $navigationGroup = 'Kasir';
 
     public static function form(Forms\Form $form): Forms\Form
@@ -186,10 +189,76 @@ class TransaksiResource extends Resource
 
         ])
         ->defaultSort('created_at', 'desc')
+        ->headerActions([
+            Tables\Actions\Action::make('export')
+                ->label('Print Excel')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->form([
+                    Forms\Components\Select::make('bulan')
+                        ->label('Pilih Bulan')
+                        ->options([
+                            '1'  => 'Januari',
+                            '2'  => 'Februari',
+                            '3'  => 'Maret',
+                            '4'  => 'April',
+                            '5'  => 'Mei',
+                            '6'  => 'Juni',
+                            '7'  => 'Juli',
+                            '8'  => 'Agustus',
+                            '9'  => 'September',
+                            '10' => 'Oktober',
+                            '11' => 'November',
+                            '12' => 'Desember',
+                        ])
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    $bulan = $data['bulan'];
+
+                    $bulanMap = [
+                        '1'  => 'Januari',
+                        '2'  => 'Februari',
+                        '3'  => 'Maret',
+                        '4'  => 'April',
+                        '5'  => 'Mei',
+                        '6'  => 'Juni',
+                        '7'  => 'Juli',
+                        '8'  => 'Agustus',
+                        '9'  => 'September',
+                        '10' => 'Oktober',
+                        '11' => 'November',
+                        '12' => 'Desember',
+                    ];
+
+                    $namaBulan = $bulanMap[$bulan] ?? 'Tanpa Bulan';
+                    $filename = 'Transaksi_' . $namaBulan . '.xlsx';
+
+                    return \Maatwebsite\Excel\Facades\Excel::download(
+                        new \App\Exports\TransaksiExport($bulan),
+                        $filename
+                    );
+                }),
+        ])
         ->actions([
             Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
-        ])
+        ])    
+        ->filters([
+            SelectFilter::make('bulan')
+                ->label('Filter Bulan')
+                ->options(
+                    collect(range(1, 12))->mapWithKeys(function ($bulan) {
+                        return [
+                            $bulan => Carbon::create()->month($bulan)->translatedFormat('F'),
+                        ];
+                    })->toArray()
+                )
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query->when($data['value'], function ($query, $bulan) {
+                        return $query->whereMonth('created_at', $bulan);
+                    });
+                }),
+        ])  
         ->bulkActions([
             Tables\Actions\DeleteBulkAction::make(),
         ]);

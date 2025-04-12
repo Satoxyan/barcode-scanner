@@ -37,12 +37,13 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             // ->brandName('BarKodein')
-            ->brandLogo(asset('images/barcode.png'))
+            ->sidebarCollapsibleOnDesktop()
+            ->brandLogo(asset('images/barakbarkodein.png'))
             ->brandLogoHeight('3rem')
             ->font('outfit')
             ->colors([
                 'danger' => Color::Rose,
-                'gray' => 'rgb(51, 25, 17)',
+                'gray' => 'rgb(46, 30, 24)',
                 'info' => Color::Blue,
                 'primary' => 'rgb(212, 99, 64)',
                 'success' => Color::Emerald,
