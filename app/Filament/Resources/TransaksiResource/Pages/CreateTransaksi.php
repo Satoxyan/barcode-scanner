@@ -15,42 +15,4 @@ class CreateTransaksi extends CreateRecord
 {
     protected static string $resource = TransaksiResource::class;
 
-    protected function handleRecordCreation(array $data): Model
-{
-    return DB::transaction(function () use ($data) {
-        $items = $data['items'] ?? [];
-
-        $transaksi = Transaksi::create([
-            'total' => $data['total'] ?? 0,
-            'nominal_uang' => $data['nominal_uang'] ?? 0,
-            'kembalian' => $data['kembalian'] ?? 0,
-        ]);
-        
-
-        foreach ($items as $item) {
-            // Simpan ke tabel barang_transaksi
-            BarangTransaksi::create([
-                'id_transaksi' => $transaksi->id,
-                'nama' => $item['nama'] ?? 'TANPA NAMA', 
-                'harga' => $item['harga'] ?? 0,          
-                'jumlah' => $item['jumlah'] ?? 1,
-                'subtotal' => $item['subtotal'] ?? 0,
-            ]);
-
-            // Kurangi stok di tabel barang
-            if (!empty($item['barcode'])) {
-                $barang = Barang::where('barcode', $item['barcode'])->first();
-                if ($barang) {
-                    $barang->decrement('stok', $item['jumlah']);
-                }
-            }
-        }
-
-        
-
-        return $transaksi;
-    });
-}
-
-
 }

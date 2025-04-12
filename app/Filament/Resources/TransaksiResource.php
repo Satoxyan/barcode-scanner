@@ -20,7 +20,8 @@ use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Carbon;
-
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Card;
 
 
 class TransaksiResource extends Resource
@@ -240,7 +241,99 @@ class TransaksiResource extends Resource
                 }),
         ])
         ->actions([
-            Tables\Actions\EditAction::make(),
+            Action::make('editTransaksi')
+                ->label('Lihat')
+                ->icon('heroicon-o-eye')
+                ->mountUsing(fn ($form, $record) => $form->fill([
+                    'barangTransaksi' => $record->barangTransaksi->toArray(),
+                    'total_harga' => $record->total_harga,
+                    'nominal_uang' => $record->nominal_uang,
+                    'kembalian' => $record->kembalian,
+                ]))
+                ->form([
+                    Grid::make(1)
+                    ->schema([
+                        Card::make([
+                            Repeater::make('barangTransaksi')
+                                ->relationship('barangTransaksi')
+                                ->label('Daftar Barang')
+                                ->schema([
+                                    TextInput::make('nama')
+                                        ->label('Nama Barang')
+                                        ->readOnly()
+                                        ->columnSpan(2),
+
+                                    TextInput::make('harga')
+                                        ->label('Harga')
+                                        ->readOnly(),
+
+                                    TextInput::make('jumlah')
+                                        ->label('Jumlah')
+                                        ->numeric()
+                                        ->required()
+                                        ->reactive()
+                                        ->readOnly()
+                                        ->afterStateUpdated(fn ($state, callable $set, $get) =>
+                                            $set('subtotal', $get('harga') * $state)
+                                        ),
+
+                                    TextInput::make('subtotal')
+                                        ->label('Subtotal')
+                                        ->readOnly(),
+                                ])
+                                ->columns([
+                                    'sm' => 5,
+                                    'md' => 5,
+                                ])
+                                ->defaultItems(0)
+                                ->disableItemCreation()
+                                ->disableItemDeletion(),
+                        ]),
+
+                        Grid::make()
+                            ->schema([
+                                TextInput::make('total_harga')
+                                    ->label('Total Harga')
+                                    ->readOnly()
+                                    ->reactive()
+                                    ->afterStateHydrated(function ($state, callable $set, $get) {
+                                        $total = collect($get('barangTransaksi'))->sum('subtotal');
+                                        $set('total_harga', $total);
+                                    }),
+                            ])
+                            ->columns(1),
+
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('nominal_uang')
+                                ->label('Nominal Uang')
+                                ->numeric()
+                                ->required()
+                                ->dehydrated() // <== WAJIB agar dikirim ke database
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                    $total = (int) $get('total_harga') ?? 0;
+                                    $set('kembalian', max((int) $state - $total, 0));
+                                }),
+                            
+                            TextInput::make('kembalian')
+                                ->label('Kembalian')
+                                ->readOnly()
+                                ->numeric()
+                                ->dehydrated(), // <== juga harus didehydrate
+                            
+                            ])
+                            ->columns(2),
+                    ]),
+                ])
+                ->action(function ($record, array $data) {
+                    $record->update([
+                        'nominal_uang' => $data['nominal_uang'],
+                        'kembalian' => $data['kembalian'],
+                    ]);
+                })
+                ->modalHeading('Edit Transaksi')
+                ->modalSubmitActionLabel('Simpan Perubahan'),
             Tables\Actions\DeleteAction::make(),
         ])    
         ->filters([
@@ -264,7 +357,178 @@ class TransaksiResource extends Resource
         ]);
 }
 
-    
+public static function getHeaderActions(): array
+{
+    return [
+        Action::make('create')
+            ->label('Buat Transaksi')
+            ->icon('heroicon-m-plus')
+            ->form(self::getFormSchema()) // ← gunakan schema form yang sama
+            ->modalHeading('Transaksi Baru')
+            ->modalSubmitActionLabel('Simpan')
+            ->action(function (array $data) {
+                // Logika simpan bisa disalin dari `CreateTransaksi::handleRecordCreation`
+                \DB::transaction(function () use ($data) {
+                    $items = $data['items'] ?? [];
+
+                    $transaksi = \App\Models\Transaksi::create([
+                        'total' => $data['total'] ?? 0,
+                        'nominal_uang' => $data['nominal_uang'] ?? 0,
+                        'kembalian' => $data['kembalian'] ?? 0,
+                    ]);
+
+                    foreach ($items as $item) {
+                        \App\Models\BarangTransaksi::create([
+                            'id_transaksi' => $transaksi->id,
+                            'nama' => $item['nama'] ?? 'TANPA NAMA',
+                            'harga' => $item['harga'] ?? 0,
+                            'jumlah' => $item['jumlah'] ?? 1,
+                            'subtotal' => $item['subtotal'] ?? 0,
+                        ]);
+
+                        if (!empty($item['barcode'])) {
+                            $barang = \App\Models\Barang::where('barcode', $item['barcode'])->first();
+                            if ($barang) {
+                                $barang->decrement('stok', $item['jumlah']);
+                            }
+                        }
+                    }
+                });
+
+                Filament\Notifications\Notification::make()
+                    ->success()
+                    ->title('Transaksi berhasil disimpan')
+                    ->send();
+            }),
+    ];
+}
+ 
+public static function getFormSchema(): array
+{
+    return [
+        Forms\Components\TextInput::make('barcodeInput')
+            ->label('Scan Barcode')
+            ->live()
+            ->numeric()
+            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                $barang = \App\Models\Barang::where('barcode', $state)->first();
+                if ($barang) {
+                    $items = $get('items') ?? [];
+                    $found = false;
+
+                    foreach ($items as &$item) {
+                        if ($item['barcode'] === $state) {
+                            $item['jumlah'] += 1;
+                            $item['subtotal'] = $item['harga'] * $item['jumlah'];
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    if (!$found) {
+                        $items[] = [
+                            'barcode' => $state,
+                            'nama' => $barang->nama,
+                            'harga' => $barang->harga,
+                            'jumlah' => 1,
+                            'subtotal' => $barang->harga,
+                        ];
+                    }
+
+                    $set('items', $items);
+                    $set('barcodeInput', '');
+                    $total = collect($items)->sum('subtotal');
+                    $set('total', $total);
+                }
+            }),
+
+        Forms\Components\Repeater::make('items')
+            ->label('Daftar Barang')
+            ->schema([
+                Forms\Components\TextInput::make('barcode')
+                    ->label('Barcode')
+                    ->dehydrated()
+                    ->readOnly(),
+
+                Forms\Components\TextInput::make('nama')
+                    ->label('Nama Barang')
+                    ->dehydrated()
+                    ->readOnly(),
+
+                Forms\Components\TextInput::make('harga')
+                    ->label('Harga')
+                    ->dehydrated()
+                    ->readOnly()
+                    ->numeric(),
+
+                Forms\Components\TextInput::make('jumlah')
+                    ->label('Jumlah')
+                    ->numeric()
+                    ->live()
+                    ->reactive()
+                    ->dehydrated()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        $harga = $get('harga') ?? 0;
+                        $subtotal = $state * $harga;
+                        $set('subtotal', $subtotal);
+
+                        $items = $get('../items') ?? [];
+                        $items[$get('__index')]['subtotal'] = $subtotal;
+
+                        $total = collect($items)->sum('subtotal');
+                        $set('../../total', $total);
+                    }),
+
+                Forms\Components\TextInput::make('subtotal')
+                    ->label('Subtotal')
+                    ->readOnly()
+                    ->dehydrated()
+                    ->reactive()
+                    ->numeric(),
+            ])
+            ->columns(5)
+            ->columnSpanFull()
+            ->dehydrated()
+            ->required()
+            ->default([])
+            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                $total = collect($state)->sum('subtotal');
+                $set('total', $total);
+            }),
+
+        Forms\Components\TextInput::make('total')
+            ->label('Total Harga')
+            ->readOnly()
+            ->numeric()
+            ->live()
+            ->dehydrated()
+            ->reactive()
+            ->extraAttributes(['class' => 'text-large'])
+            ->default(fn (callable $get) => collect($get('items') ?? [])->sum('subtotal')),
+
+        Forms\Components\Grid::make(2)->schema([
+            Forms\Components\TextInput::make('nominal_uang')
+                ->label('Nominal Uang')
+                ->numeric()
+                ->required()
+                ->dehydrated()
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    $total = (int) $get('total');
+                    $set('kembalian', max((int) $state - $total, 0));
+                }),
+
+            Forms\Components\TextInput::make('kembalian')
+                ->label('Kembalian')
+                ->readOnly()
+                ->dehydrated()
+                ->numeric()
+                ->reactive(),
+        ]),
+    ];
+}
+
+
     public static function getRelations(): array
     {
         return [];
@@ -274,8 +538,8 @@ class TransaksiResource extends Resource
     {
         return [
             'index' => Pages\ListTransaksis::route('/'),
-            'create' => Pages\CreateTransaksi::route('/create'),
-            'edit' => Pages\EditTransaksi::route('/{record}/edit'),
+            // 'create' => Pages\CreateTransaksi::route('/create'),
+            // 'edit' => Pages\EditTransaksi::route('/{record}/edit'),
         ];
     }
 }
