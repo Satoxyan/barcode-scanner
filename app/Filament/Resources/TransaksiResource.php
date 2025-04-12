@@ -18,6 +18,9 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Carbon;
+
 
 
 class TransaksiResource extends Resource
@@ -186,7 +189,23 @@ class TransaksiResource extends Resource
         ->actions([
             Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
-        ])
+        ])    
+        ->filters([
+            SelectFilter::make('bulan')
+                ->label('Filter Bulan')
+                ->options(
+                    collect(range(1, 12))->mapWithKeys(function ($bulan) {
+                        return [
+                            $bulan => Carbon::create()->month($bulan)->translatedFormat('F'),
+                        ];
+                    })->toArray()
+                )
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query->when($data['value'], function ($query, $bulan) {
+                        return $query->whereMonth('created_at', $bulan);
+                    });
+                }),
+        ])  
         ->bulkActions([
             Tables\Actions\DeleteBulkAction::make(),
         ]);
