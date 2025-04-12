@@ -16,13 +16,13 @@ class TransaksiChart extends ChartWidget
     {
         // Ambil 5 hari terakhir termasuk hari ini
     $dates = collect();
-    for ($i = 4; $i >= 0; $i--) {
+    for ($i = 13; $i >= 0; $i--) {
         $dates->push(now()->subDays($i)->format('Y-m-d'));
     }
 
     // Ambil data dari database
     $transaksiData = Transaksi::selectRaw('DATE(created_at) as date, COUNT(*) as total')
-        ->whereDate('created_at', '>=', now()->subDays(4)->startOfDay())
+        ->whereDate('created_at', '>=', now()->subDays(13)->startOfDay())
         ->groupBy('date')
         ->orderBy('date')
         ->pluck('total', 'date');

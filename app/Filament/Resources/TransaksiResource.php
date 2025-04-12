@@ -186,6 +186,56 @@ class TransaksiResource extends Resource
 
         ])
         ->defaultSort('created_at', 'desc')
+        ->headerActions([
+            Tables\Actions\Action::make('export')
+                ->label('Print Excel')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->form([
+                    Forms\Components\Select::make('bulan')
+                        ->label('Pilih Bulan')
+                        ->options([
+                            '1'  => 'Januari',
+                            '2'  => 'Februari',
+                            '3'  => 'Maret',
+                            '4'  => 'April',
+                            '5'  => 'Mei',
+                            '6'  => 'Juni',
+                            '7'  => 'Juli',
+                            '8'  => 'Agustus',
+                            '9'  => 'September',
+                            '10' => 'Oktober',
+                            '11' => 'November',
+                            '12' => 'Desember',
+                        ])
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    $bulan = $data['bulan'];
+
+                    $bulanMap = [
+                        '1'  => 'Januari',
+                        '2'  => 'Februari',
+                        '3'  => 'Maret',
+                        '4'  => 'April',
+                        '5'  => 'Mei',
+                        '6'  => 'Juni',
+                        '7'  => 'Juli',
+                        '8'  => 'Agustus',
+                        '9'  => 'September',
+                        '10' => 'Oktober',
+                        '11' => 'November',
+                        '12' => 'Desember',
+                    ];
+
+                    $namaBulan = $bulanMap[$bulan] ?? 'Tanpa Bulan';
+                    $filename = 'Transaksi_' . $namaBulan . '.xlsx';
+
+                    return \Maatwebsite\Excel\Facades\Excel::download(
+                        new \App\Exports\TransaksiExport($bulan),
+                        $filename
+                    );
+                }),
+        ])
         ->actions([
             Tables\Actions\EditAction::make(),
             Tables\Actions\DeleteAction::make(),
