@@ -21,7 +21,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 class GeneratedBarcodeResource extends Resource
 {
     protected static ?string $model = GeneratedBarcode::class;
-    protected static ?string $navigationIcon = 'heroicon-o-qr-code';
+    protected static ?string $navigationIcon = 'heroicon-s-qr-code';
     protected static ?string $navigationGroup = 'Manajemen Barang';
 
     public static function form(Form $form): Form

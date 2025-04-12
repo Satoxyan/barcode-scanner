@@ -26,7 +26,7 @@ use Illuminate\Support\Carbon;
 class TransaksiResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-s-banknotes';
     protected static ?string $navigationGroup = 'Kasir';
 
     public static function form(Forms\Form $form): Forms\Form

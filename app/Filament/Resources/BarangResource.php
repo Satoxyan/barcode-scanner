@@ -18,7 +18,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 class BarangResource extends Resource
 {
     protected static ?string $model = Barang::class;
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-s-archive-box';
     protected static ?string $navigationGroup = 'Manajemen Barang';
 
     public static function form(Forms\Form $form): Forms\Form {
