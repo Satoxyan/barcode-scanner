@@ -168,6 +168,7 @@ class TransaksiResource extends Resource
 
                 Tables\Columns\TextColumn::make('total')
                 ->label('Total Harga')
+                ->money('IDR')
                 ->sortable()
                 ->searchable(),
 
@@ -178,10 +179,12 @@ class TransaksiResource extends Resource
 
             Tables\Columns\TextColumn::make('nominal_uang')
                 ->label('Nominal Uang')
+                ->money('IDR')
                 ->sortable(),
 
             Tables\Columns\TextColumn::make('kembalian')
                 ->label('Kembalian')
+                ->money('IDR')
                 ->sortable(),
 
         ])
