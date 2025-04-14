@@ -24,6 +24,8 @@ use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Card;
 
 
+
+
 class TransaksiResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
@@ -244,6 +246,7 @@ class TransaksiResource extends Resource
             Action::make('editTransaksi')
                 ->label('Lihat')
                 ->slideOver()
+                ->modalSubmitAction(false)
                 ->icon('heroicon-o-eye')
                 ->mountUsing(fn ($form, $record) => $form->fill([
                     'barangTransaksi' => $record->barangTransaksi->toArray(),
@@ -333,10 +336,13 @@ class TransaksiResource extends Resource
                         'kembalian' => $data['kembalian'],
                     ]);
                 })
-                ->modalHeading('Edit Transaksi')
-                ->modalSubmitActionLabel('Simpan Perubahan'),
+                ->modalActions([])
+                ->modalHeading('Edit Transaksi'),
+                
             Tables\Actions\DeleteAction::make(),
+            
         ])    
+        
         ->filters([
             SelectFilter::make('bulan')
                 ->label('Filter Bulan')
@@ -358,10 +364,10 @@ class TransaksiResource extends Resource
         ]);
 }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
+public static function getRelations(): array
+{
+    return [];
+}
 
     public static function getPages(): array
     {
