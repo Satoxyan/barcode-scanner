@@ -4629,8 +4629,8 @@ select {
 .dark\:bg-gray-950:is(.dark *) {
     --tw-bg-opacity: 1;
     background-color: rgba(var(--gray-950), var(--tw-bg-opacity, 1));
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
-                      url('tren.jpeg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                      url('tren.jpg');
     background-size: cover;
     background-position: center;
 }
