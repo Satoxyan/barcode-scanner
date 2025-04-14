@@ -65,10 +65,14 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            
+            // ->renderHook(
+            //     'panels::body.end',
+            //     fn () => view('filament.components.footer')
+            // )
             ->authMiddleware([
                 Authenticate::class, // Pastikan middleware auth tetap ada
             ]);
+            
     }
 
         private function autoLogin($request, $next)

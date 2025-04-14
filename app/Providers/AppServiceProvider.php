@@ -5,7 +5,11 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // Pastikan model User sesuai dengan yang digunakan
+use App\Models\User;
+use Filament\Panel;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +37,10 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::SIDEBAR_NAV_END, // Posisi footer setelah sidebar navigasi
+            fn (): View => view('filament.components.footer') // Menambahkan view untuk footer
+        );
     }
 }
