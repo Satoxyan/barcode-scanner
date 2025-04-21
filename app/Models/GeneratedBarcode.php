@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GeneratedBarcode extends Model
 {
-    protected $fillable = ['kode'];
+    protected $table = 'generated_barcodes';
+
+    protected $fillable = ['kode','nama_barang'];
 }

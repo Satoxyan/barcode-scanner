@@ -33,6 +33,10 @@ class GeneratedBarcodeResource extends Resource
                     ->label('Input Kode')
                     ->numeric()
                     ->required(),
+                
+                Forms\Components\TextInput::make('nama_barang')
+                    ->label('Nama Barang')
+                    ->required(),
             ]);
     }
     public static function table(Table $table): Table
@@ -56,10 +60,18 @@ class GeneratedBarcodeResource extends Resource
                     })
                     ->url(fn ($record) => Storage::url("barcodes/{$record->id}.png"))
                     ->openUrlInNewTab(),
-                Tables\Columns\TextColumn::make('kode')->label('Kode')
+                Tables\Columns\TextColumn::make('kode')
+                    ->label('Kode')
+                    ->searchable()
+                    ->copyable()
+                    ->copyMessage("Barcode Copied")
+                    ->copyMessageDuration(1500)
+                    ->sortable(),
+                
+                Tables\Columns\TextColumn::make('nama_barang')
+                    ->label('Nama Barang')
                     ->searchable()
                     ->sortable(),
-
             ])
             ->filters([
                 //
