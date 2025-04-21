@@ -51,7 +51,10 @@ class BarangResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('barcode')->label('Barcode')
-                ->searchable(),
+                ->searchable()
+                ->copyable()
+                ->copyMessage('Barcode Copied')
+                ->copyMessageDuration(1500),
 
                 Tables\Columns\TextColumn::make('nama')->label('Nama Barang')
                 ->searchable()
