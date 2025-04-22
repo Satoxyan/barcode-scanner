@@ -19,6 +19,11 @@ class StatsOverview extends BaseWidget
                 ->description('Jumlah seluruh transaksi')
                 ->descriptionIcon('heroicon-o-arrow-trending-up')
                 ->color('success')
+                ->chart(
+                    collect(range(0, 6))->map(function ($i) {
+                        return Barang::whereDate('created_at', now()->subDays($i)->toDateString())->count();
+                    })->reverse()->values()->all()
+                )
                 ->extraAttributes([
                     'class' => 'text-base md:text-lg', // Ukuran judul & angka
                 ]),
@@ -27,6 +32,11 @@ class StatsOverview extends BaseWidget
                 ->description('Jumlah semua barang')
                 ->descriptionIcon('heroicon-o-cube')
                 ->color('primary')
+                ->chart(
+                    collect(range(0, 6))->map(function ($i) {
+                        return Transaksi::whereDate('created_at', now()->subDays($i)->toDateString())->count();
+                    })->reverse()->values()->all()
+                )
                 ->extraAttributes([
                     'class' => 'text-base md:text-lg',
                 ]),
@@ -37,4 +47,9 @@ class StatsOverview extends BaseWidget
     {
         return 1; // Supaya bertumpuk
     }
+
+    public static function getSort(): int
+    {
+        return 10; // Semakin besar, semakin bawah
+    }    
 }

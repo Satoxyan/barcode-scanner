@@ -47,4 +47,9 @@ class TransaksiChart extends ChartWidget
     {
         return 'bar';
     }
+
+    public static function getSort(): int
+    {
+        return 10; // Semakin besar, semakin bawah
+    }    
 }
