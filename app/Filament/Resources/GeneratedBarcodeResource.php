@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Support\Facades\Storage;
+use Filament\Notifications\Notification;
 
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
@@ -29,14 +30,7 @@ class GeneratedBarcodeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('kode')
-                    ->label('Input Kode')
-                    ->numeric()
-                    ->required(),
                 
-                Forms\Components\TextInput::make('nama_barang')
-                    ->label('Nama Barang')
-                    ->required(),
             ]);
     }
     public static function table(Table $table): Table
@@ -72,9 +66,36 @@ class GeneratedBarcodeResource extends Resource
                     ->label('Nama Barang')
                     ->searchable()
                     ->sortable(),
+                    
+                Tables\Columns\TextColumn::make('created_at')
+                    ->hidden(true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('create')
+                    ->label('Tambah Barang')
+                    ->icon('heroicon-m-plus')
+                    ->form([
+                        Forms\Components\TextInput::make('kode')
+                            ->label('Input Kode')
+                            ->numeric()
+                            ->required(),
+                    
+                        Forms\Components\TextInput::make('nama_barang')
+                            ->label('Nama Barang')
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        \App\Models\GeneratedBarcode::create($data);
+
+                        Notification::make()
+                            ->success()
+                            ->title('Transaksi berhasil disimpan')
+                            ->send();
+                    })
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),

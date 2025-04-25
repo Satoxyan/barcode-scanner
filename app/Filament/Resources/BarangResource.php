@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Notifications\Notification;
+
 
 class BarangResource extends Resource
 {
@@ -25,25 +27,24 @@ class BarangResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('barcode')
-                    ->label('Barcode')
-                    ->required()
-                    ->live(), // Agar form bisa mendeteksi perubahan langsung
-
-                Forms\Components\TextInput::make('nama')
-                    ->label('Nama Barang')
-                    ->required(),
-
-                Forms\Components\TextInput::make('harga')
-                    ->label('Harga Barang')
-                    ->required()
-                    ->numeric(),
-
-                Forms\Components\TextInput::make('stok')
-                    ->label('Stok Barang')
-                    ->numeric()
-                    ->required()
-                    ->default(0),
-                
+                            ->label('Barcode')
+                            ->required()
+                            ->live(), // Agar form bisa mendeteksi perubahan langsung
+    
+                        Forms\Components\TextInput::make('nama')
+                            ->label('Nama Barang')
+                            ->required(),
+        
+                        Forms\Components\TextInput::make('harga')
+                            ->label('Harga Barang')
+                            ->required()
+                            ->numeric(),
+        
+                        Forms\Components\TextInput::make('stok')
+                            ->label('Stok Barang')
+                            ->numeric()
+                            ->required()
+                            ->default(0),
             ]);
     }
 
@@ -63,7 +64,45 @@ class BarangResource extends Resource
                 Tables\Columns\TextColumn::make('harga')->label('Harga Barang')->money('IDR'),
 
                 Tables\Columns\TextColumn::make('stok')->label('Stok'),
+
+                Tables\Columns\TextColumn::make('created_at')->label('dibuat')
+                ->hidden(true),
             ])
+            ->headerActions([
+                Tables\Actions\Action::make('create')
+                    ->label('Tambah Barang')
+                    ->icon('heroicon-m-plus')
+                    ->form([
+                        Forms\Components\TextInput::make('barcode')
+                            ->label('Barcode')
+                            ->required()
+                            ->live(), // Agar form bisa mendeteksi perubahan langsung
+    
+                        Forms\Components\TextInput::make('nama')
+                            ->label('Nama Barang')
+                            ->required(),
+        
+                        Forms\Components\TextInput::make('harga')
+                            ->label('Harga Barang')
+                            ->required()
+                            ->numeric(),
+        
+                        Forms\Components\TextInput::make('stok')
+                            ->label('Stok Barang')
+                            ->numeric()
+                            ->required()
+                            ->default(0),
+                        ])
+                        ->action(function (array $data) {
+                            \App\Models\Barang::create($data);
+
+                            Notification::make()
+                                ->success()
+                                ->title('Transaksi berhasil disimpan')
+                                ->send();
+                        })
+            ])
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
