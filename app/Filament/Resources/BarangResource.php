@@ -93,12 +93,31 @@ class BarangResource extends Resource
                             ->required()
                             ->default(0),
                         ])
-                        ->action(function (array $data) {
+                        ->action(function (array $data, $livewire) {
+                            $kode = $data['barcode'];
+                    
+                            // Cek apakah kode sudah ada di database
+                            $exists = \App\Models\Barang::where('barcode', $kode)->exists();
+                    
+                            if ($exists) {
+                                // Tampilkan notifikasi gagal
+                                Notification::make()
+                                    ->title('Barcode sudah ada!')
+                                    ->body("Barcode {$kode} telah digunakan.")
+                                    ->danger()
+                                    ->send();
+                    
+                                return; // Stop proses create
+                            }
+                    
+                            // Simpan ke database jika belum ada
                             \App\Models\Barang::create($data);
-
+                    
+                            // Tampilkan notifikasi sukses
                             Notification::make()
+                                ->title('Berhasil!')
+                                ->body("Barcode berhasil ditambahkan.")
                                 ->success()
-                                ->title('Transaksi berhasil disimpan')
                                 ->send();
                         })
             ])

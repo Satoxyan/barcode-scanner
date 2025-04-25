@@ -18,14 +18,19 @@ class TransaksiExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        return Transaksi::when($this->bulan, function ($query) {
+        return Transaksi::with('barangTransaksi') // Ambil relasi barang
+            ->when($this->bulan, function ($query) {
                 $query->whereMonth('created_at', (int) $this->bulan);
             })
-            ->select('id', 'total', 'nominal_uang', 'kembalian', 'created_at')
             ->get()
             ->map(function ($item) {
+                $barang = $item->barangTransaksi
+                    ->map(fn ($b) => "{$b->nama}×{$b->jumlah}")
+                    ->implode(', ');
+
                 return [
                     'id' => $item->id,
+                    'barang' => $barang,
                     'total' => $item->total,
                     'nominal_uang' => $item->nominal_uang,
                     'kembalian' => $item->kembalian,
@@ -38,6 +43,7 @@ class TransaksiExport implements FromCollection, WithHeadings
     {
         return [
             'ID',
+            'Barang',
             'Total Harga',
             'Nominal Uang',
             'Kembalian',

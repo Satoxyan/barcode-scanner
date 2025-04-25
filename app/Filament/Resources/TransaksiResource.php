@@ -170,7 +170,19 @@ class TransaksiResource extends Resource
                 ->sortable()
                 ->searchable(),
 
-                Tables\Columns\TextColumn::make('total')
+            Tables\Columns\TextColumn::make('barang_terkait')
+                ->label('Barang')
+                ->getStateUsing(function ($record) {
+                    return $record->barangTransaksi
+                        ->map(fn ($item) => "{$item->nama}×{$item->jumlah}")
+                        ->implode(', ');
+                })
+                ->wrap() // jika ingin teks turun baris jika panjang
+                ->sortable(false)
+                ->searchable(false),
+            
+
+            Tables\Columns\TextColumn::make('total')
                 ->label('Total Harga')
                 ->money('IDR')
                 ->sortable()
