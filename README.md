@@ -1,71 +1,192 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<!-- # **SIPUPS** | e-Book Based Library Information System 📚  
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+SIPUPS (e-Book Based Library Information System) is a digital platform designed to efficiently manage book lending in the form of e-books. Built using **Filament v3.x** on the **Laravel 11.x** framework, SIPUPS provides a modern and intuitive interface for **administrators, officers, and visitors**.  
 
-## About Laravel
+- **Administrators** have full control over managing books and user data.  
+- **Officers** can only manage the e-book collection.  
+- **Visitors** can **read e-books directly** within the system without downloading them, ensuring secure and controlled access.  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Key features include:  
+✅ Drag-and-drop functionality to upload book covers and PDFs.  
+✅ Authentication using `filament/user`.  
+✅ A **responsive admin panel** for seamless management.  
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## **Installation & Setup**  
 
-## Learning Laravel
+### **Prerequisites**  
+Before running this project, make sure you have the following tools installed:  
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP (latest stable version)  
+- Composer  
+- Node.js & npm  
+- MySQL  
+- A web server (Apache, Nginx, etc.)  
+- A modern web browser  
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### **Clone the Repository**  
+```bash
+git clone https://github.com/dxnz-id/sipups.git
+cd sipups
+``` -->
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### **Install Dependencies**  
+```bash
+composer install
+npm install
+```
 
-## Laravel Sponsors
+### **Environment Configuration**  
+1. Copy the `.env.example` file and rename it to `.env`.  
+2. Configure the environment file to match your database and application settings.  
+3. Link the storage:  
+   ```bash
+   php artisan storage:link
+   ```
+4. Generate an application key:  
+   ```bash
+   php artisan key:generate
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### **Storage Setup**  
+```bash
+php artisan storage:link
+```
+### **Database Setup**  
+```bash
+php artisan migrate
+php artisan db:seed
+```
 
-### Premium Partners
+### **Start the Application**  
+```bash
+composer run dev
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Open your browser and visit:  
+```
+http://localhost:8000/admin/login
+```
 
-## Contributing
+### **Default Login Credentials**  
+You can log in using the following accounts:  
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Email                 | Password      |
+|-----------------------|--------------|
+| user@example.com      | labnotes123  |
 
-## Code of Conduct
+---
+<!-- 
+## **Panel Details**  
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### **Admin Panel**  
+📌 **Dashboard**  
+- Total users, books, categories  
+- Administrator, officers, visitors  
+- 4 newest books displayed in a card interface  
 
-## Security Vulnerabilities
+📌 **Books Management**  
+- View, edit, delete books  
+- Add new books with title, author, publisher, ISBN, category, cover, PDF file, and description  
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+📌 **Category Management**  
+- View, edit, delete categories  
+- Create new categories  
 
-## License
+📌 **User Management**  
+- View, edit (roles), and delete users  
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+📌 **Profile Settings**  
+- Update name, email, password  
+- Manage active browser sessions  
+- Delete account  
 
-This project is licensed under a Custom Non-Commercial License.  
-Commercial use or redistribution is not allowed without permission.  
-See the [LICENSE](./LICENSE) file for more details.
+---
 
+### **Officer Panel**  
+📌 **Dashboard**  
+- Total users, books, categories  
+- 4 newest books displayed  
+
+📌 **Books Management**  
+- View, edit, delete books  
+- Add new books  
+
+📌 **Category Management**  
+- View, edit, delete categories  
+- Create new categories  
+
+📌 **User List**  
+
+📌 **Profile Settings**  
+- Update name, email, password  
+- Manage browser sessions  
+- Delete account  
+
+---
+
+### **Visitor Panel**  
+📌 **Dashboard**  
+- Total users, books, categories  
+- 4 newest books displayed  
+
+📌 **Books Section**  
+- View book list and details  
+- Read books directly through the system  
+
+📌 **Profile Settings**  
+- Update name, email, password  
+- Manage browser sessions  
+- Delete account  
+
+---
+
+## **Database Structure**  
+
+### **Books Table**  
+| Column        | Type        |
+|--------------|------------|
+| id           | Integer    |
+| title        | String     |
+| author       | String     |
+| publisher    | String     |
+| published_at | Date       |
+| isbn         | String     |
+| category_id  | Integer    |
+| description  | Text       |
+| covers       | String     |
+| pdf_file     | String     |
+| created_at   | Timestamp  |
+| updated_at   | Timestamp  |
+
+### **Users Table**  
+| Column          | Type        |
+|---------------|------------|
+| id            | Integer    |
+| name          | String     |
+| email         | String     |
+| roles         | String     |
+| email_verified_at | Timestamp |
+| password      | String     |
+| remember_token | String     |
+| created_at    | Timestamp  |
+| updated_at    | Timestamp  |
+
+### **Categories Table**  
+| Column       | Type        |
+|-------------|------------|
+| id          | Integer    |
+| name        | String     |
+| created_at  | Timestamp  |
+| updated_at  | Timestamp  |
+
+Other tables include **sessions, permissions, roles, job batches, failed jobs, password resets**, and more.  
+
+---
+
+## **Contributing**  
+
+We welcome contributions! Please check out our [Contribution Guidelines](CONTRIBUTING.md) for more details on how to contribute.  
+
+--- -->
