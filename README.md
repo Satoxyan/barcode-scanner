@@ -55,8 +55,7 @@ php artisan storage:link
 ```
 ### **Database Setup**  
 ```bash
-php artisan migrate
-php artisan db:seed
+php artisan migrate --seed
 ```
 
 ### **Start the Application**  
@@ -66,127 +65,5 @@ composer run dev
 
 Open your browser and visit:  
 ```
-http://localhost:8000/admin/login
+http://localhost:8000/
 ```
-
-### **Default Login Credentials**  
-You can log in using the following accounts:  
-
-| Email                 | Password      |
-|-----------------------|--------------|
-| user@example.com      | labnotes123  |
-
----
-<!-- 
-## **Panel Details**  
-
-### **Admin Panel**  
-📌 **Dashboard**  
-- Total users, books, categories  
-- Administrator, officers, visitors  
-- 4 newest books displayed in a card interface  
-
-📌 **Books Management**  
-- View, edit, delete books  
-- Add new books with title, author, publisher, ISBN, category, cover, PDF file, and description  
-
-📌 **Category Management**  
-- View, edit, delete categories  
-- Create new categories  
-
-📌 **User Management**  
-- View, edit (roles), and delete users  
-
-📌 **Profile Settings**  
-- Update name, email, password  
-- Manage active browser sessions  
-- Delete account  
-
----
-
-### **Officer Panel**  
-📌 **Dashboard**  
-- Total users, books, categories  
-- 4 newest books displayed  
-
-📌 **Books Management**  
-- View, edit, delete books  
-- Add new books  
-
-📌 **Category Management**  
-- View, edit, delete categories  
-- Create new categories  
-
-📌 **User List**  
-
-📌 **Profile Settings**  
-- Update name, email, password  
-- Manage browser sessions  
-- Delete account  
-
----
-
-### **Visitor Panel**  
-📌 **Dashboard**  
-- Total users, books, categories  
-- 4 newest books displayed  
-
-📌 **Books Section**  
-- View book list and details  
-- Read books directly through the system  
-
-📌 **Profile Settings**  
-- Update name, email, password  
-- Manage browser sessions  
-- Delete account  
-
----
-
-## **Database Structure**  
-
-### **Books Table**  
-| Column        | Type        |
-|--------------|------------|
-| id           | Integer    |
-| title        | String     |
-| author       | String     |
-| publisher    | String     |
-| published_at | Date       |
-| isbn         | String     |
-| category_id  | Integer    |
-| description  | Text       |
-| covers       | String     |
-| pdf_file     | String     |
-| created_at   | Timestamp  |
-| updated_at   | Timestamp  |
-
-### **Users Table**  
-| Column          | Type        |
-|---------------|------------|
-| id            | Integer    |
-| name          | String     |
-| email         | String     |
-| roles         | String     |
-| email_verified_at | Timestamp |
-| password      | String     |
-| remember_token | String     |
-| created_at    | Timestamp  |
-| updated_at    | Timestamp  |
-
-### **Categories Table**  
-| Column       | Type        |
-|-------------|------------|
-| id          | Integer    |
-| name        | String     |
-| created_at  | Timestamp  |
-| updated_at  | Timestamp  |
-
-Other tables include **sessions, permissions, roles, job batches, failed jobs, password resets**, and more.  
-
----
-
-## **Contributing**  
-
-We welcome contributions! Please check out our [Contribution Guidelines](CONTRIBUTING.md) for more details on how to contribute.  
-
---- -->
