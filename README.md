@@ -49,13 +49,18 @@ npm install
    php artisan key:generate
    ```
 
-### **Storage Setup**  
-```bash
-php artisan storage:link
-```
 ### **Database Setup**  
 ```bash
 php artisan migrate --seed
+```
+
+### **Optimize**
+```bash
+php artisan optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
 ```
 
 ### **Start the Application**  
